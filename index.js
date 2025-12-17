@@ -100,6 +100,7 @@ app.post("/todos", async (req, res) => {
     if (!req.body.description) {
       return res.status(400).json({ message: "description is required" }); // better status 400 for bad request
     }
+    //ss
 
     const todo = new Todo({
       title: req.body.title,
