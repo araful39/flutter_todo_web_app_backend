@@ -70,7 +70,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import Todo from "./models/Todo.js";
+import Todo from "../models/Todo.js";
 
 const app = express();
 
