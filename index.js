@@ -95,16 +95,16 @@ app.get("/todos", async (req, res) => {
 app.post("/todos", async (req, res) => {
   try {
     if (!req.body.title) {
-      return res.status(400).json({ message: "title is required" }); // better status 400 for bad request
+      return res.status(400).json({ message: "title is required" });
     }
     if (!req.body.description) {
-      return res.status(400).json({ message: "description is required" }); // better status 400 for bad request
+      return res.status(400).json({ message: "description is required" });
     }
     //ss
 
     const todo = new Todo({
       title: req.body.title,
-      description: req.body.description,        // note: you're sending "des" from frontend
+      description: req.body.description,      
       createdAt: req.body.createdAt,
     });
 
