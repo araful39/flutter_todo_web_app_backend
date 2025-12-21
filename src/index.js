@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import Todo from "../models/Todo.js";
+import Todo from "./models/Todo.js";
 
 dotenv.config();
 
@@ -10,7 +10,21 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+/* 🔐 INVALID JSON ERROR HANDLER (IMPORTANT) */
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid JSON format. Use double quotes and valid JSON."
+    });
+  }
+  next();
+});
 
+/* ---------- Routes ---------- */
+app.get("/", (req, res) => {
+  res.send("Todo API running 🚀");
+});
 // Routes
 app.get("/todos", async (req, res) => {
   try {
