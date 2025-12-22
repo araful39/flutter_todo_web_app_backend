@@ -35,7 +35,7 @@ app.get("/todos", async (req, res) => {
   }
 });
 
-app.post("/todos", async (req, res) => {
+app.post("/todos_add", async (req, res) => {
   try {
     const { title, description } = req.body;
 
