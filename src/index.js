@@ -74,12 +74,49 @@ if (!deletedTodo) {
 
 }
 catch(error){
- console.error('Error deleting todo:', error); // সার্ভারে লগ দেখার জন্য
+ console.error('Error deleting todo:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
 }
 
 
  });
+
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+   
+    if (!title || title.trim() === "") {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      {
+        title: title.trim(),
+        description: description ? description.trim() : "", 
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.json(updatedTodo); 
+
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ message: "Validation failed", errors });
+    }
+
+    console.error("Error updating todo:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // DELETE a todo by ID - সঠিক পাথ সহ
 // app.delete('/todos/:id', async (req, res) => {
 //   try {
