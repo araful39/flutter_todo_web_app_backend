@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-/* 🔐 INVALID JSON ERROR HANDLER (IMPORTANT) */
+
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
     return res.status(400).json({
@@ -35,7 +35,7 @@ app.get("/todos", async (req, res) => {
   }
 });
 
-app.post("/todos_add", async (req, res) => {
+app.post("/todos", async (req, res) => {
   try {
     const { title, description } = req.body;
 
@@ -58,7 +58,53 @@ app.post("/todos_add", async (req, res) => {
   }
 });
 
-// ✅ START SERVER ONLY AFTER DB CONNECTS
+
+ app.delete('/todos/:id', async(req,res) => {
+
+try{
+    const { id } = req.params;
+console.log('Deleting Todo with ID:', id);
+
+ const deletedTodo= await Todo.findByIdAndDelete(id);
+if (!deletedTodo) {
+      return res.status(404).json({ message: 'Todo not found with this ID' });
+    }
+
+ res.status(200).json({message:"Todo delete successfully",deletedTodo: deletedTodo});
+
+}
+catch(error){
+ console.error('Error deleting todo:', error); // সার্ভারে লগ দেখার জন্য
+    res.status(500).json({ message: 'Server error', error: error.message });
+}
+
+
+ });
+// DELETE a todo by ID - সঠিক পাথ সহ
+// app.delete('/todos/:id', async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     console.log('Deleting Todo with ID:', id); // ← ঠিক করা হয়েছে
+
+//     const deletedTodo = await Todo.findByIdAndDelete(id);
+
+//     if (!deletedTodo) {
+//       return res.status(404).json({ message: 'Todo not found with this ID' });
+//     }
+
+//     res.status(200).json({
+//       message: 'Todo deleted successfully',
+//       deletedTodo // ঐচ্ছিক: কী ডিলিট হয়েছে সেটা দেখানোর জন্য
+//     });
+//   } catch (error) { // ← e → error করা হয়েছে
+//     console.error('Error deleting todo:', error);
+//     res.status(500).json({
+//       message: 'Server error',
+//       error: error.message
+//     });
+//   }
+// });
+
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
